@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-  ]
+, "src/reportWebVitals.ts", "__another__/try-use-array.tsx", "__another__/useArray.ts"  ]
 }
