@@ -1,4 +1,11 @@
-export default function List({ users, list }) {
+import { Project, User } from ".";
+
+
+interface ListProps {
+  users: User[];
+  list: Project[];
+}
+export default function List({ users, list }: ListProps) {
   return (
     <table>
       <thead>

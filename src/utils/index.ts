@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-const isFalsy = (value) => (value === 0 ? false : !value);
+const isFalsy = (value: any) => (value === 0 ? false : !value);
 
-export const cleanObject = (obj) => {
+export const cleanObject = (obj: any) => {
   let result = { ...obj };
   Object.keys(result).forEach((key) => {
     let value = result[key];
@@ -13,7 +13,7 @@ export const cleanObject = (obj) => {
   return result;
 };
 
-export const useDebounce = (value, delay) => {
+export const useDebounce = (value: any, delay?: number) => {
   const [result, setResult] = useState(value);
   useEffect(() => {
     const timer = setTimeout(() => {

@@ -1,4 +1,15 @@
-export default function SearchPanel({ param, setParam, users }) {
+import { User } from "./index";
+interface SearchPanelProps {
+  param: { name: string; personId: string };
+  setParam: (param: SearchPanelProps["param"]) => void;
+  users: User[];
+}
+
+export default function SearchPanel({
+  param,
+  setParam,
+  users,
+}: SearchPanelProps) {
   return (
     <form>
       <input
@@ -7,8 +18,8 @@ export default function SearchPanel({ param, setParam, users }) {
         onChange={(evt) => setParam({ ...param, name: evt.target.value })}
       />
       <select
-        value={param.id}
-        onChange={(evt) => setParam({ ...param, id: evt.target.value })}
+        value={param.personId}
+        onChange={(evt) => setParam({ ...param, personId: evt.target.value })}
       >
         <option value="">负责人</option>
         {users.map((user) => (
