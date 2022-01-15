@@ -1,6 +1,13 @@
-import React, { ReactNode, useCallback, useContext, useState } from "react";
+import React, {
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import * as auth from "../auth-provider";
 import { User } from "../screen/project-list";
+import { http } from "../utils/http";
 
 const AuthContext = React.createContext<
   | {
@@ -14,12 +21,24 @@ const AuthContext = React.createContext<
 >(undefined);
 AuthContext.displayName = "AuthContext";
 
+const bootstrapUser = async () => {
+  const { getToken } = auth;
+  const token = getToken();
+  if (token) {
+    const data = await http("me", { token });
+    return data.user;
+  }
+};
 interface AuthForm {
   username: string;
   password: string;
 }
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    bootstrapUser().then(setUser);
+  }, []);
 
   const login = useCallback(
     (form: AuthForm) => auth.login(form).then(setUser),
@@ -40,8 +59,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if(!context) {
-    throw new Error('请在AuthProvider中使用.')
+  if (!context) {
+    throw new Error("请在AuthProvider中使用.");
   }
   return context;
-}
+};
