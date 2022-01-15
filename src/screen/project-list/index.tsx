@@ -12,6 +12,7 @@ export interface User {
   email: string;
   title: string;
   organization: string;
+  token:string
 }
 
 export interface Project {
@@ -22,7 +23,7 @@ export interface Project {
   organization: string;
 }
 
-const ProjectScreenList = () => {
+const ProjectListScreenList = () => {
   const [users, setUsers] = useState([]);
   const [list, setList] = useState([]);
   const [param, setParam] = useState({
@@ -57,4 +58,4 @@ const ProjectScreenList = () => {
   );
 };
 
-export default ProjectScreenList;
+export default ProjectListScreenList;
