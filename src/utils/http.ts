@@ -54,6 +54,7 @@ export const http = async (
 export const useHttp = () => {
   const { user } = useAuth();
   return useCallback(
+    /* TS 联合类型 */
     (...[endpoint, config]: Parameters<typeof http>) =>
       http(endpoint, { ...config, token: user?.token }),
     [user]
