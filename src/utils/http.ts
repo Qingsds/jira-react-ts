@@ -22,7 +22,6 @@ export const http = async (
     },
     ...customConfig,
   };
-  console.log(config.headers);
 
   /* 
   若请求方法是 GET,将参数携带在 URL 内

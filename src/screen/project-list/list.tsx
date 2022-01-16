@@ -1,5 +1,5 @@
+import { Table } from "antd";
 import { Project, User } from ".";
-
 
 interface ListProps {
   users: User[];
@@ -7,26 +7,27 @@ interface ListProps {
 }
 export default function List({ users, list }: ListProps) {
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>名称</th>
-          <th>负责人</th>
-        </tr>
-      </thead>
-      <tbody>
-        {list.map((project) => {
-          return (
-            <tr key={project.id}>
-              <td>{project.name}</td>
+    <Table
+      pagination={false}
+      rowKey={"id"}
+      columns={[
+        {
+          title: "名称",
+          dataIndex: "name",
+          sorter: (a, b) => a.name.localeCompare(b.name),
+        },
+        {
+          title: "负责人",
+          render(index, project) {
+            return (
               <td>
-                {users.find((user) => user.id === project.personId)?.name ||
-                  "未命名"}
+                {users.find((user) => user.id === project.personId)?.name}
               </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+            );
+          },
+        },
+      ]}
+      dataSource={list}
+    />
   );
 }
