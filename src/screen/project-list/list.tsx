@@ -18,11 +18,12 @@ export default function List({ users, list }: ListProps) {
         },
         {
           title: "负责人",
+          // TODO render 报错
           render(index, project) {
             return (
-              <td>
+              <span>
                 {users.find((user) => user.id === project.personId)?.name}
-              </td>
+              </span>
             );
           },
         },

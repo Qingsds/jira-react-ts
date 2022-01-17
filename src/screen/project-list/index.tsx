@@ -3,6 +3,7 @@ import List from "./list";
 import { useEffect, useState } from "react";
 import { cleanObject, useDebounce } from "../../utils";
 import { useHttp } from "../../utils/http";
+import styled from "@emotion/styled";
 export interface User {
   id: string;
   name: string;
@@ -17,6 +18,7 @@ export interface Project {
   personId: string;
   pin: boolean;
   organization: string;
+  created:number;
 }
 
 const ProjectListScreenList = () => {
@@ -38,11 +40,15 @@ const ProjectListScreenList = () => {
   }, [client]);
 
   return (
-    <div>
+    <Container>
       <SearchPanel param={param} setParam={setParam} users={users} />
       <List users={users} list={list} />
-    </div>
+    </Container>
   );
 };
 
 export default ProjectListScreenList;
+
+const Container = styled.div`
+  padding: 3.2rem;
+`
