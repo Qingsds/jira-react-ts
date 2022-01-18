@@ -1,23 +1,30 @@
 import styled from "@emotion/styled";
-import { Row } from "./components/lib";
+import { NoPaddingButton, Row } from "./components/lib";
 import { useAuth } from "./context/auth-context";
 import ProjectListScreen from "./screen/project-list";
 import { ReactComponent as SoftWareLogo } from "./assets/software-logo.svg";
 import { Button, Dropdown, Menu } from "antd";
-import { useDocumentTitle } from "./utils";
-import { Route, Routes } from "react-router-dom";
+import { restRouter, useDocumentTitle } from "./utils";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import ProjectScreen from "./screen/project";
+import { useEffect } from "react";
 
 export default function AuthenticatedApp() {
   useDocumentTitle("任务列表", false);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if(window.location.pathname.length <= 1){
+      navigate('projects')
+    }
+  },[navigate])
   return (
     <Container>
       <PageHeader />
       <Main>
         <Routes>
+          <Route index element={<ProjectListScreen />} />
           <Route path={"projects"} element={<ProjectListScreen />} />
           <Route path={"projects/:projectId/*"} element={<ProjectScreen />} />
-          <Route index element={<ProjectListScreen />} />
         </Routes>
       </Main>
     </Container>
@@ -29,7 +36,9 @@ const PageHeader = () => {
   return (
     <Header between={true}>
       <HeaderLeft gap={true}>
+        <NoPaddingButton type={'link'} onClick={restRouter}>
         <SoftWareLogo width={"18rem"} color={"rgb(38,132,255)"} />
+        </NoPaddingButton>
         <h3>列表</h3>
         <h3>人员</h3>
       </HeaderLeft>

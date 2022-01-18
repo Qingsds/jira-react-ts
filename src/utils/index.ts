@@ -42,3 +42,7 @@ export const useDocumentTitle = (title: string, isKeepMount = true) => {
     };
   }, [oldTitle, isKeepMount]);
 };
+
+export const restRouter = () => {
+  window.location.href = window.location.origin;
+};
