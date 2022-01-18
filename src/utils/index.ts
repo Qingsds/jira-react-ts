@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const isFalsy = (value: unknown) => (value === 0 ? false : !value);
 
@@ -26,4 +26,19 @@ export const useDebounce = <T>(value: T, delay?: number) => {
     };
   }, [value, delay]);
   return result;
+};
+
+export const useDocumentTitle = (title: string, isKeepMount = true) => {
+  const oldTitle = useRef(document.title).current;
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+
+  useEffect(() => {
+    return () => {
+      if (!isKeepMount) {
+        document.title = oldTitle;
+      }
+    };
+  }, [oldTitle, isKeepMount]);
 };
