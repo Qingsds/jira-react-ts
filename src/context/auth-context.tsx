@@ -5,7 +5,7 @@ import React, {
   useEffect,
 } from "react";
 import * as auth from "../auth-provider";
-import { FullPageError, FullPageLoading } from "../components/lib";
+import { FullPageErrorFallback, FullPageLoading } from "../components/lib";
 import { User } from "../screen/project-list";
 import { http } from "../utils/http";
 import { useAsync } from "../utils/use-async";
@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return <FullPageLoading/>
   }
   if(error) {
-    return <FullPageError error={error}  />
+    return <FullPageErrorFallback error={error}  />
   }
 
   return (
