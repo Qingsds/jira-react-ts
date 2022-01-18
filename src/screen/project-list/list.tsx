@@ -1,11 +1,11 @@
-import { Table } from "antd";
+import { Table, TableProps } from "antd";
+import dayjs from "dayjs";
 import { Project, User } from ".";
 
-interface ListProps {
+interface ListProps extends TableProps<Project>{
   users: User[];
-  list: Project[];
 }
-export default function List({ users, list }: ListProps) {
+export default function List({ users,...props }: ListProps) {
   return (
     <Table
       pagination={false}
@@ -18,7 +18,10 @@ export default function List({ users, list }: ListProps) {
         },
         {
           title: "负责人",
-          // TODO render 报错
+          dataIndex: "organization",
+        },
+        {
+          title: "负责人",
           render(index, project) {
             return (
               <span>
@@ -27,8 +30,14 @@ export default function List({ users, list }: ListProps) {
             );
           },
         },
+        {
+          title: "创建日期",
+          render(index, project) {
+            return <span>{dayjs(project.created).format("YYYY-MM-DD")}</span>;
+          },
+        },
       ]}
-      dataSource={list}
+      {...props}
     />
   );
 }

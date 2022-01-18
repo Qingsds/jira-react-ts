@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import {  QueryClient, QueryClientProvider } from "react-query";
 import { AuthProvider } from "./auth-context";
 
 export default function AuthContextProvider({
@@ -6,5 +7,16 @@ export default function AuthContextProvider({
 }: {
   children: ReactNode;
 }) {
-  return <AuthProvider>{children}</AuthProvider>;
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>{children}</AuthProvider>
+    </QueryClientProvider>
+  );
 }

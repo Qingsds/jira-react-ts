@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 
 const isFalsy = (value: unknown) => (value === 0 ? false : !value);
 
-export const cleanObject = (obj: any) => {
+/* { [key: string]: unknown }  键值对对象*/
+export const cleanObject = (obj: { [key: string]: unknown }) => {
   let result = { ...obj };
   Object.keys(result).forEach((key) => {
     let value = result[key];

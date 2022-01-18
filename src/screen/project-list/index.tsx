@@ -1,9 +1,11 @@
 import SearchPanel from "./search-panel";
 import List from "./list";
-import { useEffect, useState } from "react";
-import { cleanObject, useDebounce } from "../../utils";
-import { useHttp } from "../../utils/http";
+import { useState } from "react";
+import { useDebounce } from "../../utils";
 import styled from "@emotion/styled";
+import { useProjects } from "../../utils/project";
+import { useUsers } from "../../utils/users";
+import { Typography } from "antd";
 export interface User {
   id: string;
   name: string;
@@ -18,31 +20,26 @@ export interface Project {
   personId: string;
   pin: boolean;
   organization: string;
-  created:number;
+  created: number;
 }
 
 const ProjectListScreenList = () => {
-  const [users, setUsers] = useState([]);
-  const [list, setList] = useState([]);
   const [param, setParam] = useState({
     name: "",
     personId: "",
   });
   const debounceParam = useDebounce(param, 200);
-  const client = useHttp();
-
-  useEffect(() => {
-    client("projects", { data: cleanObject(debounceParam) }).then(setList);
-  }, [debounceParam, client]);
-
-  useEffect(() => {
-    client("users").then(setUsers);
-  }, [client]);
+  const { data: list, isLoading, error } = useProjects(debounceParam);
+  const { data: users } = useUsers();
 
   return (
     <Container>
-      <SearchPanel param={param} setParam={setParam} users={users} />
-      <List users={users} list={list} />
+      <h1>项目列表</h1>
+      <SearchPanel param={param} setParam={setParam} users={users || []} />
+      {error ? (
+        <Typography.Text type={"danger"}>{error.message}</Typography.Text>
+      ) : null}
+      <List users={users || []} dataSource={list || []} loading={isLoading} />
     </Container>
   );
 };
@@ -51,4 +48,4 @@ export default ProjectListScreenList;
 
 const Container = styled.div`
   padding: 3.2rem;
-`
+`;

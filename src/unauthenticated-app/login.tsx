@@ -1,12 +1,18 @@
-import { Button, Form, Input } from "antd";
+import { Form, Input } from "antd";
 import { LongButton } from ".";
 import { useAuth } from "../context/auth-context";
+import { useAsync } from "../utils/use-async";
 
-export default function LoginScreen() {
+export default function LoginScreen({
+  onError,
+}: {
+  onError: (error: Error) => void;
+}) {
   const { login } = useAuth();
+  const { run, isLoading } = useAsync(undefined, { throwError: true });
 
-  const handleSubmit = (value: { username: string; password: string }) => {
-    login(value);
+  const handleSubmit = async(value: { username: string; password: string }) => {
+    await run(login(value)).catch(onError);
   };
 
   return (
@@ -24,7 +30,7 @@ export default function LoginScreen() {
         <Input type="password" placeholder="密码" />
       </Form.Item>
       <Form.Item>
-        <LongButton type={"primary"} htmlType={"submit"}>
+        <LongButton loading={isLoading} type={"primary"} htmlType={"submit"}>
           登录
         </LongButton>
       </Form.Item>

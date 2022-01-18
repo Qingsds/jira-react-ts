@@ -3,11 +3,12 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useState,
 } from "react";
 import * as auth from "../auth-provider";
+import { FullPageError, FullPageLoading } from "../components/lib";
 import { User } from "../screen/project-list";
 import { http } from "../utils/http";
+import { useAsync } from "../utils/use-async";
 
 const AuthContext = React.createContext<
   | {
@@ -34,21 +35,36 @@ interface AuthForm {
   password: string;
 }
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const {
+    data: user,
+    setData: setUser,
+    error,
+    isLoading,
+    isIdle,
+    run
+  } = useAsync<User>();
 
   useEffect(() => {
-    bootstrapUser().then(setUser);
-  }, []);
+      run(bootstrapUser())
+  }, [run]);
 
   const login = useCallback(
     (form: AuthForm) => auth.login(form).then(setUser),
-    []
+    [setUser]
   );
   const register = useCallback(
     (form: AuthForm) => auth.register(form).then(setUser),
-    []
+    [setUser]
   );
-  const logout = useCallback(() => auth.logout().then(() => setUser(null)), []);
+  const logout = useCallback(() => auth.logout().then(() => setUser(null)), [setUser]);
+
+  if(isIdle||isLoading){
+    return <FullPageLoading/>
+  }
+  if(error) {
+    return <FullPageError error={error}  />
+  }
+
   return (
     <AuthContext.Provider
       children={children}

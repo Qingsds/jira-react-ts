@@ -1,20 +1,26 @@
-import { Button, Form, Input } from "antd";
+import { Form, Input } from "antd";
 import { LongButton } from ".";
 import { useAuth } from "../context/auth-context";
+import { useAsync } from "../utils/use-async";
 
-export default function RegisterScreen() {
+export default function RegisterScreen({
+  onError,
+}: {
+  onError: (error: Error) => void;
+}) {
   const { register } = useAuth();
+  const { run, isLoading } = useAsync(undefined, { throwError: true });
 
-  const handleSubmit = (value: {
+  const handleSubmit = async (value: {
     username: string;
     password: string;
     cpassword: string;
   }) => {
     const { username, password, cpassword } = value;
     if (password === cpassword) {
-      register({ username, password });
+      await run(register({ username, password })).catch(onError);
     } else {
-      alert("两次密码输入不一致");
+      onError(new Error("两次密码输入不一致"));
     }
   };
 
@@ -52,7 +58,7 @@ export default function RegisterScreen() {
         <Input type="password" placeholder="确认密码" />
       </Form.Item>
       <Form.Item>
-        <LongButton type={"primary"} htmlType={"submit"}>
+        <LongButton loading={isLoading} type={"primary"} htmlType={"submit"}>
           注册
         </LongButton>
       </Form.Item>
