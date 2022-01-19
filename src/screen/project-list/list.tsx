@@ -15,7 +15,7 @@ export default function List({ users, ...props }: ListProps) {
         {
           title: "名称",
           render(index, project) {
-            return <Link to={String(project.id)}>{project.name}</Link>;
+            return <Link to={`projects/${String(project.id)}`}>{project.name}</Link>;
           },
           sorter: (a, b) => a.name.localeCompare(b.name),
         },

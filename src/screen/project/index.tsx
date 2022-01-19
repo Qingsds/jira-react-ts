@@ -1,16 +1,8 @@
-import { useEffect } from "react";
-import { Link, Route, Routes, useNavigate } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import EpicScreen from "../epic";
 import KanbanScreen from "../kanban";
 
 export default function ProjectScreen() {
-  const navigate = useNavigate();
-  useEffect(() => {
-    const array = window.location.pathname.split("/");
-    if (array.indexOf("kanban") === -1 && array.indexOf("epic") === -1) {
-      navigate("kanban");
-    }
-  }, [navigate]);
   return (
     <div>
       <h1>ProjectScreen</h1>

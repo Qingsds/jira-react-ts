@@ -117,7 +117,7 @@ export const Row = styled.div<{
 `;
 ```
 
-捕捉错误边界
+### 捕捉错误边界
 
 ```jsx
 import React, { ReactElement } from "react";
@@ -143,4 +143,34 @@ export default class ErrorBoundary extends React.Component<
     return children;
   }
 }
+```
+
+### 自定义iterator
+
+如何检测对象有没有部署 `iterator`:`target[Symbol.iterator]`
+
+
+```javaScript
+
+const obj = {
+  data:['hello','world'],
+  [Symbol.iterator](){
+    const self = this
+    let index = 0
+    return {
+      next(){
+        /* 中间可以加入自己的逻辑 */
+        if(index < self.data.length){
+          return {
+            value:self.data[index++]
+            done: false
+          }
+        } else {
+          return {value:undefined,done:true}
+        }
+      }
+    }
+  }
+}
+
 ```

@@ -1,18 +1,17 @@
-import { Form, Input, Select } from "antd";
-import { User } from "./index";
+import { Form, Input } from "antd";
+import UserSelect from "../../components/user-select";
+import { Project } from "./index";
 interface SearchPanelProps {
-  param: { name: string; personId: string };
+  param: Partial<Pick<Project, "name" | "personId">>;
   setParam: (param: SearchPanelProps["param"]) => void;
-  users: User[];
 }
 
 export default function SearchPanel({
   param,
   setParam,
-  users,
 }: SearchPanelProps) {
   return (
-    <Form style={{marginBottom:'2rem'}} layout={"inline"}>
+    <Form style={{ marginBottom: "2rem" }} layout={"inline"}>
       <Form.Item>
         <Input
           placeholder="项目名"
@@ -21,17 +20,13 @@ export default function SearchPanel({
           onChange={(evt) => setParam({ ...param, name: evt.target.value })}
         />
       </Form.Item>
-      <Select
-        value={param.personId}
-        onChange={(value) => setParam({ ...param, personId: value })}
-      >
-        <Select.Option value="">负责人</Select.Option>
-        {users.map((user) => (
-          <Select.Option key={user.id} value={user.id}>
-            {user.name}
-          </Select.Option>
-        ))}
-      </Select>
+      <Form.Item>
+        <UserSelect
+          value={param.personId}
+          defaultOptionName={"负责人"}
+          onChange={(value) => setParam({ ...param, personId: value })}
+        />
+      </Form.Item>
     </Form>
   );
 }
