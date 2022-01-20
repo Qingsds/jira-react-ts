@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import { useMountRef } from ".";
 
 interface State<D> {
   data: D | null;
@@ -27,8 +28,11 @@ export const useAsync = <D>(
     ...defaultInitialState,
     ...initialState,
   });
-
-  const setData = useCallback((param: D|null) => {
+  /* 更新完数据后刷新页面 */
+  const [retry, setRetry] = useState(() => () => {});
+  /* 查看是否被挂载的 flag */
+  const mountRef = useMountRef();
+  const setData = useCallback((param: D | null) => {
     setState({
       data: param,
       status: "success",
@@ -45,14 +49,20 @@ export const useAsync = <D>(
   }, []);
 
   const run = useCallback(
-     async(promise: Promise<D>) => {
+    async (promise: Promise<D>, retryConfig?: { retry: () => Promise<D> }) => {
       if (!promise || !promise.then) {
         throw new Error("请传入 Promise 类型参数");
       }
+      setRetry(() => () => {
+        if (retryConfig) {
+          run(retryConfig.retry(), retryConfig);
+        }
+      });
+
       setState((state) => ({ ...state, status: "loading" }));
       return promise
         .then((data) => {
-          setData(data);
+          if (mountRef.current) setData(data);
           return data;
         })
         .catch((error) => {
@@ -74,5 +84,6 @@ export const useAsync = <D>(
     setError,
     data: state.data,
     error: state.error,
+    retry,
   };
 };

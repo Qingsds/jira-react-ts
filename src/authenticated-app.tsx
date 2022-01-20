@@ -5,7 +5,7 @@ import ProjectListScreen from "./screen/project-list";
 import { ReactComponent as SoftWareLogo } from "./assets/software-logo.svg";
 import { Button, Dropdown, Menu } from "antd";
 import { restRouter, useDocumentTitle } from "./utils";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import ProjectScreen from "./screen/project";
 import { BrowserRouter as Router } from "react-router-dom";
 
@@ -17,7 +17,7 @@ export default function AuthenticatedApp() {
       <Main>
         <Router>
           <Routes>
-            <Route index element={<ProjectListScreen />} />
+            <Route path="*" element={<Navigate to={'projects'}/>} />
             <Route path={"projects"} element={<ProjectListScreen />} />
             <Route path={"projects/:projectId/*"} element={<ProjectScreen />} />
           </Routes>

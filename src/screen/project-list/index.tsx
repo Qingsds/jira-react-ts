@@ -25,7 +25,12 @@ export interface Project {
 
 const ProjectListScreenList = () => {
   const [param, setParam] = useProjectSearchParams();
-  const { data: list, isLoading, error } = useProjects(useDebounce(param, 500));
+  const {
+    data: list,
+    isLoading,
+    error,
+    retry,
+  } = useProjects(useDebounce(param, 500));
   const { data: users } = useUsers();
 
   return (
@@ -35,7 +40,12 @@ const ProjectListScreenList = () => {
       {error ? (
         <Typography.Text type={"danger"}>{error.message}</Typography.Text>
       ) : null}
-      <List users={users || []} dataSource={list || []} loading={isLoading} />
+      <List
+        refresh={retry}
+        users={users || []}
+        dataSource={list || []}
+        loading={isLoading}
+      />
     </Container>
   );
 };

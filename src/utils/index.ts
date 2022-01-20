@@ -46,3 +46,20 @@ export const useDocumentTitle = (title: string, isKeepMount = true) => {
 export const restRouter = () => {
   window.location.href = window.location.origin;
 };
+
+/**
+ * uesMountRef
+ * 用来返回组件的挂载状态
+ * 如果还没有挂载或已经卸载 返回 false 否则返回 true
+ */
+
+export const useMountRef = () => {
+  const mountRef = useRef(false);
+  useEffect(() => {
+    mountRef.current = true;
+    return () => {
+      mountRef.current = false;
+    };
+  });
+  return mountRef;
+};

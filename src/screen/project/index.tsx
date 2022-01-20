@@ -1,4 +1,4 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
 import EpicScreen from "../epic";
 import KanbanScreen from "../kanban";
 
@@ -12,7 +12,7 @@ export default function ProjectScreen() {
       <Routes>
         <Route path={"kanban"} element={<KanbanScreen />} />
         <Route path={"epic"} element={<EpicScreen />} />
-        <Route index element={<KanbanScreen />} />
+        <Route path="*" element={<Navigate to={'kanban'}/>} />
       </Routes>
     </div>
   );

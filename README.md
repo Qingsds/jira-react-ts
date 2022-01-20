@@ -86,6 +86,8 @@ export const useAsync = <D>(initialState?: State<D>) => {
 };
 ```
 
+### useState直接传入函数的意义是惰性初始化
+
 ## 其他
 
 `import { ReactComponent as SoftWareLogo } from "./assets/software-logo.svg";`可以将 svg 转换成ReactComponent,方便自定义样式
@@ -149,7 +151,6 @@ export default class ErrorBoundary extends React.Component<
 
 如何检测对象有没有部署 `iterator`:`target[Symbol.iterator]`
 
-
 ```javaScript
 
 const obj = {
@@ -174,3 +175,5 @@ const obj = {
 }
 
 ```
+
+### 乐观更新
