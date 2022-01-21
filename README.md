@@ -176,4 +176,56 @@ const obj = {
 
 ```
 
+### component composition
+
+官网的例子
+
+```jsx
+
+/**
+ * 如果在最后只有 Avatar 组件真的需要 user 和 avatarSize，
+ * 那么层层传递这两个 props 就显得非常冗余。而且一旦 Avatar 
+ * 组件需要更多从来自顶层组件的 props，你还得在中间级一个一个加上去，这将会变得非常麻烦。
+ * 
+**/
+
+<Page user={user} avatarSize={avatarSize} />
+// ... 渲染出 ...
+<PageLayout user={user} avatarSize={avatarSize} />
+// ... 渲染出 ...
+<NavigationBar user={user} avatarSize={avatarSize} />
+// ... 渲染出 ... (消费者)
+<Link href={user.permalink}>
+  <Avatar user={user} size={avatarSize} />
+</Link>
+
+
+/**
+ * component composition
+ * 种变化下，只有最顶部的 Page 组件需要知道 Link 和 Avatar 
+ * 组件是如何使用 user 和 avatarSize 的。
+**/
+function Page(props) {
+  const user = props.user;
+  const userLink = (
+    <Link href={user.permalink}>
+      <Avatar user={user} size={props.avatarSize} />
+    </Link>
+  );
+  return <PageLayout userLink={userLink} />;
+}
+
+// 现在，我们有这样的组件：
+<Page user={user} avatarSize={avatarSize} />
+// ... 渲染出 ...
+<PageLayout userLink={...} />
+// ... 渲染出 ...
+<NavigationBar userLink={...} />
+// ... 渲染出 ...
+{props.userLink}
+
+```
+
+> 这种对组件的控制反转减少了在你的应用中要传递的 props 数量，这在很多场景下会使得你的代码更加干净，使你对根组件有更多的把控
+
 ### 乐观更新
