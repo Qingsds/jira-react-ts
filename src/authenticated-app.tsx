@@ -8,56 +8,70 @@ import { restRouter, useDocumentTitle } from "./utils";
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProjectScreen from "./screen/project";
 import { BrowserRouter as Router } from "react-router-dom";
+import { ProjectPopover } from "./components/project-popover";
+import { useState } from "react";
+import { ProjectModal } from "./screen/project-list/project-modal";
 
 export default function AuthenticatedApp() {
   useDocumentTitle("任务列表", false);
+  const [projectOpenModal, setProjectOpenModal] = useState(false);
   return (
     <Container>
       <PageHeader />
       <Main>
         <Router>
           <Routes>
-            <Route path="*" element={<Navigate to={'projects'}/>} />
+            <Route path="*" element={<Navigate to={"projects"} />} />
             <Route path={"projects"} element={<ProjectListScreen />} />
             <Route path={"projects/:projectId/*"} element={<ProjectScreen />} />
           </Routes>
         </Router>
       </Main>
+      <ProjectModal
+        projectOpenModal={projectOpenModal}
+        onClose={() => setProjectOpenModal(false)}
+      />
     </Container>
   );
 }
 
 const PageHeader = () => {
-  const { logout, user } = useAuth();
   return (
     <Header between={true}>
       <HeaderLeft gap={true}>
         <NoPaddingButton type={"link"} onClick={restRouter}>
           <SoftWareLogo width={"18rem"} color={"rgb(38,132,255)"} />
         </NoPaddingButton>
-        <h3>列表</h3>
-        <h3>人员</h3>
+        <ProjectPopover />
+        <span>人员</span>
       </HeaderLeft>
-      <HeaderRight>
-        <Dropdown
-          overlay={
-            <Menu>
-              <Menu.Item key={"logout"}>
-                <Button type={"link"} onClick={logout}>
-                  登出
-                </Button>
-              </Menu.Item>
-            </Menu>
-          }
-        >
-          <Button type={"link"} onClick={(e) => e.preventDefault()}>
-            Hi,{user?.name}
-          </Button>
-        </Dropdown>
-      </HeaderRight>
+      <User />
     </Header>
   );
 };
+const User = () => {
+  const { logout, user } = useAuth();
+  return (
+    <HeaderRight>
+      <Dropdown
+        overlay={
+          <Menu>
+            <Menu.Item key={"logout"}>
+              <Button type={"link"} onClick={logout}>
+                登出
+              </Button>
+            </Menu.Item>
+          </Menu>
+        }
+      >
+        <Button type={"link"} onClick={(e) => e.preventDefault()}>
+          Hi,{user?.name}
+        </Button>
+      </Dropdown>
+    </HeaderRight>
+  );
+};
+
 const Header = styled(Row)`
   padding: 3.2rem;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);

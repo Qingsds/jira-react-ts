@@ -71,7 +71,7 @@ export const useAsync = <D>(
           return error;
         });
     },
-    [setData, setError, config]
+    [setData, setError, config,mountRef]
   );
 
   return {

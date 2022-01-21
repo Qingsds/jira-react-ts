@@ -1,17 +1,19 @@
-import { Table, TableProps } from "antd";
+import { Dropdown, Menu, Table, TableProps } from "antd";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { Project, User } from ".";
+import { NoPaddingButton } from "../../components/lib";
 import Pin from "../../components/pin";
 import { useEditProject } from "../../utils/project";
 
 interface ListProps extends TableProps<Project> {
   users: User[];
-  refresh?:() => void;
+  refresh?: () => void;
 }
 export default function List({ users, ...props }: ListProps) {
   const { mutate } = useEditProject();
-  const PinProject = (id: number) => (pin: boolean) => mutate({ id, pin }).then(props.refresh);
+  const PinProject = (id: number) => (pin: boolean) =>
+    mutate({ id, pin }).then(props.refresh);
   return (
     <Table
       pagination={false}
@@ -50,6 +52,23 @@ export default function List({ users, ...props }: ListProps) {
           title: "创建日期",
           render(index, project) {
             return <span>{dayjs(project.created).format("YYYY-MM-DD")}</span>;
+          },
+        },
+        {
+          render(project, index) {
+            return (
+              <Dropdown
+                overlay={
+                  <Menu>
+                    <Menu.Item>
+                      <NoPaddingButton type={"link"}>编辑</NoPaddingButton>
+                    </Menu.Item>
+                  </Menu>
+                }
+              >
+                <NoPaddingButton type={"link"}>...</NoPaddingButton>
+              </Dropdown>
+            );
           },
         },
       ]}

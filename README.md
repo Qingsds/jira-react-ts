@@ -149,7 +149,7 @@ export default class ErrorBoundary extends React.Component<
 
 ### 自定义iterator
 
-如何检测对象有没有部署 `iterator`:`target[Symbol.iterator]`
+如何检测对象有没有部署 `arr[Symbol.iterator]  ->> ƒ values() { [native code] }`
 
 ```javaScript
 

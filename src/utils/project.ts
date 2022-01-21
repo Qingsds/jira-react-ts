@@ -7,14 +7,14 @@ import { useAsync } from "./use-async";
 export const useProjects = (param?: Partial<Project>) => {
   const { run, ...result } = useAsync<Project[]>();
   const client = useHttp();
-  const getProjectList = useCallback(
+  const fetchProjects = useCallback(
     () => client("projects", { data: cleanObject(param || {}) }),
     [client, param]
   );
-  
+
   useEffect(() => {
-    run(getProjectList(), { retry: getProjectList });
-  }, [getProjectList, run]);
+    run(fetchProjects(), { retry: fetchProjects });
+  }, [fetchProjects, run]);
   return result;
 };
 
