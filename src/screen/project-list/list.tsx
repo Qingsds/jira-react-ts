@@ -1,10 +1,12 @@
 import { Dropdown, Menu, Table, TableProps } from "antd";
 import dayjs from "dayjs";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { Project, User } from ".";
 import { NoPaddingButton } from "../../components/lib";
 import Pin from "../../components/pin";
 import { useEditProject } from "../../utils/project";
+import { projectListAction } from "./project-list.slice";
 
 interface ListProps extends TableProps<Project> {
   users: User[];
@@ -14,6 +16,8 @@ export default function List({ users, ...props }: ListProps) {
   const { mutate } = useEditProject();
   const PinProject = (id: number) => (pin: boolean) =>
     mutate({ id, pin }).then(props.refresh);
+  const dispatch = useDispatch();
+
   return (
     <Table
       pagination={false}
@@ -60,8 +64,15 @@ export default function List({ users, ...props }: ListProps) {
               <Dropdown
                 overlay={
                   <Menu>
-                    <Menu.Item>
-                      <NoPaddingButton type={"link"}>编辑</NoPaddingButton>
+                    <Menu.Item key={'edit'}>
+                      <NoPaddingButton
+                        onClick={() =>
+                          dispatch(projectListAction.openProjectModal())
+                        }
+                        type={"link"}
+                      >
+                        编辑
+                      </NoPaddingButton>
                     </Menu.Item>
                   </Menu>
                 }

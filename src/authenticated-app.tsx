@@ -14,7 +14,6 @@ import { ProjectModal } from "./screen/project-list/project-modal";
 
 export default function AuthenticatedApp() {
   useDocumentTitle("任务列表", false);
-  const [projectOpenModal, setProjectOpenModal] = useState(false);
   return (
     <Container>
       <PageHeader />
@@ -27,10 +26,7 @@ export default function AuthenticatedApp() {
           </Routes>
         </Router>
       </Main>
-      <ProjectModal
-        projectOpenModal={projectOpenModal}
-        onClose={() => setProjectOpenModal(false)}
-      />
+      <ProjectModal/>
     </Container>
   );
 }

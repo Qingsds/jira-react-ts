@@ -7,6 +7,8 @@ import { useUsers } from "../../utils/users";
 import { Button, Typography } from "antd";
 import { useProjectSearchParams } from "./utils";
 import { Row } from "../../components/lib";
+import { useDispatch } from "react-redux";
+import { projectListAction } from "./project-list.slice";
 export interface User {
   id: number;
   name: string;
@@ -33,12 +35,14 @@ const ProjectListScreenList = () => {
     retry,
   } = useProjects(useDebounce(param, 500));
   const { data: users } = useUsers();
-
+  const dispatch = useDispatch();
   return (
     <Container>
       <Row between={true} marginBottom={1.5}>
         <h1>项目列表</h1>
-        <Button>创建项目</Button>{" "}
+        <Button onClick={() => dispatch(projectListAction.openProjectModal())}>
+          创建项目
+        </Button>
       </Row>
       <SearchPanel param={param} setParam={setParam} />
       {error ? (
