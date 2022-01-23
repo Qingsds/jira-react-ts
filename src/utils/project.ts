@@ -34,3 +34,20 @@ export const useEditProject = () => {
   );
   return { mutate, ...asyncResult };
 };
+
+export const useAddProject = () => {
+  const client = useHttp();
+  const { run, ...asyncResult } = useAsync();
+  const add = useCallback(
+    (param: Partial<Project>) => {
+      return run(
+        client("projects", {
+          method: "POST",
+          data: param,
+        })
+      );
+    },
+    [client, run]
+  );
+  return { add, ...asyncResult };
+};

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useReducer, useState } from "react";
 import { useMountRef } from ".";
 
 interface State<D> {
@@ -17,6 +17,14 @@ const defaultConfig = {
   throwError: false,
 };
 
+const useSafeDispatch = <T>(dispatch: (...args: T[]) => void) => {
+  const mountRef = useMountRef();
+  return useCallback(
+    (...args) => (mountRef.current ? dispatch(...args) : void 0),
+    [mountRef, dispatch]
+  );
+};
+
 export const useAsync = <D>(
   initialState?: State<D>,
   initialConfig?: typeof defaultConfig
@@ -24,29 +32,40 @@ export const useAsync = <D>(
   const config = useMemo(() => {
     return { ...defaultConfig, ...initialConfig };
   }, [initialConfig]);
-  const [state, setState] = useState<State<D>>({
-    ...defaultInitialState,
-    ...initialState,
-  });
+  const [state, dispatch] = useReducer(
+    (state: State<D>, action: Partial<State<D>>) => {
+      return { ...state, ...action };
+    },
+    {
+      ...defaultInitialState,
+      ...initialState,
+    }
+  );
+  const safeDispatch = useSafeDispatch(dispatch);
   /* 更新完数据后刷新页面 */
   const [retry, setRetry] = useState(() => () => {});
   /* 查看是否被挂载的 flag */
-  const mountRef = useMountRef();
-  const setData = useCallback((param: D | null) => {
-    setState({
-      data: param,
-      status: "success",
-      error: null,
-    });
-  }, []);
+  const setData = useCallback(
+    (param: D | null) => {
+      safeDispatch({
+        data: param,
+        status: "success",
+        error: null,
+      });
+    },
+    [safeDispatch]
+  );
 
-  const setError = useCallback((error: Error) => {
-    setState({
-      data: null,
-      status: "error",
-      error,
-    });
-  }, []);
+  const setError = useCallback(
+    (error: Error) => {
+      safeDispatch({
+        data: null,
+        status: "error",
+        error,
+      });
+    },
+    [safeDispatch]
+  );
 
   const run = useCallback(
     async (promise: Promise<D>, retryConfig?: { retry: () => Promise<D> }) => {
@@ -59,10 +78,10 @@ export const useAsync = <D>(
         }
       });
 
-      setState((state) => ({ ...state, status: "loading" }));
+      safeDispatch({ status: "loading" });
       return promise
         .then((data) => {
-          if (mountRef.current) setData(data);
+          setData(data);
           return data;
         })
         .catch((error) => {
@@ -71,7 +90,7 @@ export const useAsync = <D>(
           return error;
         });
     },
-    [setData, setError, config,mountRef]
+    [setData, setError, config, safeDispatch]
   );
 
   return {
