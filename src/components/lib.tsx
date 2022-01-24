@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { Button, Spin, Typography } from "antd";
 import { DevTools } from "jira-dev-tool";
+import { ErrorBox } from "../screen/project-list";
 
 export const Row = styled.div<{
   gap?: number | boolean;
@@ -36,13 +37,13 @@ export const FullPageLoading = () => (
   </FullPage>
 );
 
-export const FullPageErrorFallback = ({error}:{error: Error | null}) => (
+export const FullPageErrorFallback = ({ error }: { error: Error | null }) => (
   <FullPage>
-       <DevTools />
-    <Typography.Text type={"danger"}>{error?.message}</Typography.Text>
+    <DevTools />
+    <ErrorBox error={error} />
   </FullPage>
 );
 
 export const NoPaddingButton = styled(Button)`
   padding: 0px;
-`
+`;

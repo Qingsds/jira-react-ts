@@ -26,12 +26,7 @@ export interface Project {
 
 const ProjectListScreenList = () => {
   const [param, setParam] = useProjectSearchParams();
-  const {
-    data: list,
-    isLoading,
-    error,
-    retry,
-  } = useProjects(useDebounce(param, 500));
+  const { data: list, isLoading, error } = useProjects(useDebounce(param, 500));
   const { data: users } = useUsers();
   const { open } = useProjectModalOpen();
 
@@ -42,15 +37,8 @@ const ProjectListScreenList = () => {
         <Button onClick={open}>创建项目</Button>
       </Row>
       <SearchPanel param={param} setParam={setParam} />
-      {error ? (
-        <Typography.Text type={"danger"}>{error.message}</Typography.Text>
-      ) : null}
-      <List
-        refresh={retry}
-        users={users || []}
-        dataSource={list || []}
-        loading={isLoading}
-      />
+      <ErrorBox error={error} />
+      <List users={users || []} dataSource={list || []} loading={isLoading} />
     </Container>
   );
 };
@@ -58,6 +46,16 @@ const ProjectListScreenList = () => {
 export default ProjectListScreenList;
 
 // ProjectListScreenList.whyDidYouRender = true;
+
+const isError = (value: any): value is Error => value?.message;
+
+export const ErrorBox = ({error}: { error: unknown }) => {  
+  if (isError(error)) {   
+    return <Typography.Text type={"danger"}>{error.message}</Typography.Text>;
+  } else {
+    return null;
+  }
+};
 
 const Container = styled.div`
   padding: 3.2rem;

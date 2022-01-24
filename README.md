@@ -239,3 +239,59 @@ function Page(props) {
   - 组件层层嵌套
 
 ### 乐观更新
+
+### redux toolkit
+
+```ts
+//用来注册 reducer
+export const rootReducer = {
+  projectList: projectListSlice.reducer,
+  auth: authSlice.reducer,
+};
+
+export const store = configureStore({
+  reducer: rootReducer,
+});
+
+export type AppDispatch = typeof store.dispatch;
+//获取 getState 返回值的类型
+export type RootState = ReturnType<typeof store.getState>;
+
+
+
+/* -------------------------分割线------------------------- */
+const initialState: State = {
+  user: null,
+};
+
+export const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    setState(state, action) {
+      state.user = action.payload;
+    },
+  },
+});
+
+const { setState } = authSlice.actions;
+
+export const selectUser = (state: RootState) => state.auth.user;
+
+export const login = (form: AuthForm) => (dispatch: AppDispatch) =>
+  auth.login(form).then((user) => dispatch(setState(user)));
+
+export const register = (form: AuthForm) => (dispatch: AppDispatch) =>
+  auth.register(form).then((user) => dispatch(setState(user)));
+
+export const logout = () => (dispatch: AppDispatch) =>
+  auth.logout().then(() => dispatch(setState(null)));
+
+export const bootstrap = () => (dispatch: AppDispatch) =>
+  bootstrapUser().then((user) => dispatch(setState(user)));
+
+```
+
+### 类型守卫
+
+` const isError = (value:any) :value is Error => value?.message `

@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from "react";
+import { useProject } from "../../utils/project";
 import { useUrlQueryParam } from "../../utils/url";
 
 export const useProjectSearchParams = () => {
@@ -21,14 +22,35 @@ export const useProjectModalOpen = () => {
   const [{ createProjectModal }, setCreateProjectModal] = useUrlQueryParam([
     "createProjectModal",
   ]);
+  const [{ editingProjectId }, setEditingProjectId] = useUrlQueryParam([
+    "editingProjectId",
+  ]);
+  const { data: editingProject, isLoading } = useProject(
+    Number(editingProjectId)
+  );
 
   const open = useCallback(() => {
     setCreateProjectModal({ createProjectModal: true });
   }, [setCreateProjectModal]);
 
-  const close = useCallback(() => {
-    setCreateProjectModal({ createProjectModal: undefined });
-  }, [setCreateProjectModal]);
+  const startEditingProject = useCallback(
+    (id: number) => {
+      setEditingProjectId({ editingProjectId: id });
+    },
+    [setEditingProjectId]
+  );
 
-  return { open, close, projectModalOpen: createProjectModal === "true" };
+  const close = () => {
+    setCreateProjectModal({ createProjectModal: undefined });
+    setEditingProjectId({ editingProjectId: undefined });
+  };
+
+  return {
+    open,
+    close,
+    projectModalOpen: createProjectModal === "true" || Boolean(editingProject),
+    startEditingProject,
+    editingProject,
+    isLoading,
+  };
 };

@@ -1,53 +1,50 @@
-import { useCallback, useEffect } from "react";
-import { cleanObject } from ".";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Project } from "../screen/project-list";
 import { useHttp } from "./http";
-import { useAsync } from "./use-async";
 
+/* 查询 */
 export const useProjects = (param?: Partial<Project>) => {
-  const { run, ...result } = useAsync<Project[]>();
   const client = useHttp();
-  const fetchProjects = useCallback(
-    () => client("projects", { data: cleanObject(param || {}) }),
-    [client, param]
+  return useQuery<Project[]>(["projects", param], () =>
+    client("projects", { data: param })
   );
-
-  useEffect(() => {
-    run(fetchProjects(), { retry: fetchProjects });
-  }, [fetchProjects, run]);
-  return result;
 };
 
+/* 修改 */
 export const useEditProject = () => {
   const client = useHttp();
-  const { run, ...asyncResult } = useAsync();
-  const mutate = useCallback(
-    (param: Partial<Project>) => {
-      return run(
-        client(`projects/${param.id}`, {
-          method: "PATCH",
-          data: param,
-        })
-      );
-    },
-    [client, run]
+  const queryClient = useQueryClient();
+  return useMutation(
+    (param: Partial<Project>) =>
+      client(`projects/${param.id}`, {
+        method: "PATCH",
+        data: param,
+      }),
+    {
+      onSuccess: () => queryClient.invalidateQueries("projects"),
+    }
   );
-  return { mutate, ...asyncResult };
 };
 
+/* 添加 */
 export const useAddProject = () => {
   const client = useHttp();
-  const { run, ...asyncResult } = useAsync();
-  const add = useCallback(
-    (param: Partial<Project>) => {
-      return run(
-        client("projects", {
-          method: "POST",
-          data: param,
-        })
-      );
-    },
-    [client, run]
+  const queryClient = useQueryClient();
+  return useMutation(
+    (param: Partial<Project>) =>
+      client("projects", {
+        method: "POST",
+        data: param,
+      }),
+    {
+      onSuccess: () => queryClient.invalidateQueries("projects"),
+    }
   );
-  return { add, ...asyncResult };
+};
+
+export const useProject = (id?: number) => {
+  const client = useHttp();
+  return useQuery<Project>(["project", { id }], () => client(`projects/${id}`), {
+    enabled: !!id,
+  });
 };

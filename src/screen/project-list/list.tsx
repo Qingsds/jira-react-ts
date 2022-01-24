@@ -13,9 +13,8 @@ interface ListProps extends TableProps<Project> {
 }
 export default function List({ users, ...props }: ListProps) {
   const { mutate } = useEditProject();
-  const PinProject = (id: number) => (pin: boolean) =>
-    mutate({ id, pin }).then(props.refresh);
-  const {open} = useProjectModalOpen()
+  const PinProject = (id: number) => (pin: boolean) => mutate({ id, pin });
+  const { open } = useProjectModalOpen();
   return (
     <Table
       pagination={false}
@@ -37,7 +36,7 @@ export default function List({ users, ...props }: ListProps) {
           sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
-          title: "负责人",
+          title: "部门",
           dataIndex: "organization",
         },
         {
@@ -62,8 +61,13 @@ export default function List({ users, ...props }: ListProps) {
               <Dropdown
                 overlay={
                   <Menu>
-                    <Menu.Item>
-                      <NoPaddingButton onClick={open} type={"link"}>编辑</NoPaddingButton>
+                    <Menu.Item key={"edit"}>
+                      <NoPaddingButton onClick={open} type={"link"}>
+                        编辑
+                      </NoPaddingButton>
+                    </Menu.Item>
+                    <Menu.Item key={"delete"}>
+                      <NoPaddingButton type={"link"}>删除</NoPaddingButton>
                     </Menu.Item>
                   </Menu>
                 }

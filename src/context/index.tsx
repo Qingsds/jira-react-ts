@@ -15,6 +15,7 @@ export default function AuthContextProvider({
       },
     },
   });
+  
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
