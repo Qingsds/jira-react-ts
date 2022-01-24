@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import { useProjects } from "../../utils/project";
 import { useUsers } from "../../utils/users";
 import { Button, Typography } from "antd";
-import { useProjectSearchParams } from "./utils";
+import { useProjectModalOpen, useProjectSearchParams } from "./utils";
 import { Row } from "../../components/lib";
 export interface User {
   id: number;
@@ -33,12 +33,13 @@ const ProjectListScreenList = () => {
     retry,
   } = useProjects(useDebounce(param, 500));
   const { data: users } = useUsers();
+  const { open } = useProjectModalOpen();
 
   return (
     <Container>
       <Row between={true} marginBottom={1.5}>
         <h1>项目列表</h1>
-        <Button>创建项目</Button>{" "}
+        <Button onClick={open}>创建项目</Button>
       </Row>
       <SearchPanel param={param} setParam={setParam} />
       {error ? (

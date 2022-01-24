@@ -7,30 +7,22 @@ import { Button, Dropdown, Menu } from "antd";
 import { restRouter, useDocumentTitle } from "./utils";
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProjectScreen from "./screen/project";
-import { BrowserRouter as Router } from "react-router-dom";
 import { ProjectPopover } from "./components/project-popover";
-import { useState } from "react";
 import { ProjectModal } from "./screen/project-list/project-modal";
 
 export default function AuthenticatedApp() {
   useDocumentTitle("任务列表", false);
-  const [projectOpenModal, setProjectOpenModal] = useState(false);
   return (
     <Container>
       <PageHeader />
       <Main>
-        <Router>
           <Routes>
             <Route path="*" element={<Navigate to={"projects"} />} />
             <Route path={"projects"} element={<ProjectListScreen />} />
             <Route path={"projects/:projectId/*"} element={<ProjectScreen />} />
           </Routes>
-        </Router>
       </Main>
-      <ProjectModal
-        projectOpenModal={projectOpenModal}
-        onClose={() => setProjectOpenModal(false)}
-      />
+      <ProjectModal/>
     </Container>
   );
 }
