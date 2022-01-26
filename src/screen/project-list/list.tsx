@@ -14,7 +14,7 @@ interface ListProps extends TableProps<Project> {
 export default function List({ users, ...props }: ListProps) {
   const { mutate } = useEditProject();
   const PinProject = (id: number) => (pin: boolean) => mutate({ id, pin });
-  const { open } = useProjectModalOpen();
+  const {  startEditingProject } = useProjectModalOpen();
   return (
     <Table
       pagination={false}
@@ -56,13 +56,16 @@ export default function List({ users, ...props }: ListProps) {
           },
         },
         {
-          render(project, index) {
+          render(index, project) {
             return (
               <Dropdown
                 overlay={
                   <Menu>
                     <Menu.Item key={"edit"}>
-                      <NoPaddingButton onClick={open} type={"link"}>
+                      <NoPaddingButton
+                        onClick={() => startEditingProject(project.id)}
+                        type={"link"}
+                      >
                         编辑
                       </NoPaddingButton>
                     </Menu.Item>
