@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Project } from "../screen/project-list";
+import { useProjectSearchParams } from "../screen/project-list/utils";
 import { useHttp } from "./http";
-
 /* 查询 */
 export const useProjects = (param?: Partial<Project>) => {
   const client = useHttp();
@@ -14,6 +14,8 @@ export const useProjects = (param?: Partial<Project>) => {
 export const useEditProject = () => {
   const client = useHttp();
   const queryClient = useQueryClient();
+  const searchParams = useProjectSearchParams();
+  const queryKey = ["projects", searchParams];
   return useMutation(
     (param: Partial<Project>) =>
       client(`projects/${param.id}`, {
@@ -22,6 +24,23 @@ export const useEditProject = () => {
       }),
     {
       onSuccess: () => queryClient.invalidateQueries("projects"),
+      async onMutate(target) {
+        const previousItems = queryClient.getQueryData(queryKey);
+        queryClient.setQueryData(queryKey, (old?: Project[]) => {
+          return (
+            old?.map((project) =>
+              project.id === target.id ? { ...project, ...target } : project
+            ) || []
+          );
+        });
+        return { previousItems };
+      },
+      onError(error, newValue, context: any) {
+        queryClient.setQueryData(
+          queryKey,
+          (context as { previousItems: Project[] }).previousItems
+        );
+      },
     }
   );
 };
@@ -44,7 +63,11 @@ export const useAddProject = () => {
 
 export const useProject = (id?: number) => {
   const client = useHttp();
-  return useQuery<Project>(["project", { id }], () => client(`projects/${id}`), {
-    enabled: !!id,
-  });
+  return useQuery<Project>(
+    ["project", { id }],
+    () => client(`projects/${id}`),
+    {
+      enabled: !!id,
+    }
+  );
 };

@@ -238,7 +238,9 @@ function Page(props) {
   - 名字冲突
   - 组件层层嵌套
 
-### 乐观更新
+### 乐观更新(Optimistic Update)
+
+> 乐观更新是一种UI的行为,UI在确认从服务端操作返回之前就修改状态,如果后端操作失败,则会回滚.
 
 ### redux toolkit
 
